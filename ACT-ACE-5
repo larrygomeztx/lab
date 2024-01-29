@@ -1,0 +1,681 @@
+#ACE-L5 Topo with 4.28.4M and 2022.2.3 with auto configuration added to the CVP section (you will need to adjust the autoconfig to work for you!!!)
+
+veos:
+  # Define the global vEOS node parameters
+  username: cvpadmin
+  password: cvp123!
+  version: 4.29.5M
+
+cvp:
+  # Define the global CVP node parameters
+  username: root
+  password: cvproot
+  version: 2023.1.2
+  instance: singlenode
+
+generic:
+  # Define the global generic node parameters
+  version: Rocky-8.5
+  username: ansible
+  password: ansible
+
+nodes:
+  # Define individual node parameters
+  #   - Parameters here will override global parameters
+  - DCI:
+      ip_addr: 192.168.0.1
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet12
+          port: Ethernet1
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet12
+          port: Ethernet2
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet12
+          port: Ethernet3
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet12
+          port: Ethernet4
+
+  - sw1-ISP1:
+      ip_addr: 192.168.0.151
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: sw1-ISP3
+          neighborPort: Ethernet1
+          port: Ethernet2
+        - neighborDevice: sw2-ISP1
+          neighborPort: Ethernet1
+          port: Ethernet1
+
+  - sw2-ISP1:
+      ip_addr: 192.168.0.152
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: sw1-ISP3
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: sw1-ISP1
+          neighborPort: Ethernet1
+          port: Ethernet1
+
+  - sw1-ISP2:
+      ip_addr: 192.168.0.161
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: sw1-ISP3
+          neighborPort: Ethernet3
+          port: Ethernet2
+        - neighborDevice: sw2-ISP2
+          neighborPort: Ethernet1
+          port: Ethernet1
+
+  - sw2-ISP2:
+      ip_addr: 192.168.0.162
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: sw1-ISP3
+          neighborPort: Ethernet4
+          port: Ethernet2
+        - neighborDevice: sw1-ISP2
+          neighborPort: Ethernet1
+          port: Ethernet1
+
+  - sw1-ISP3:
+      ip_addr: 192.168.0.171
+      node_type: veos
+      neighbors:
+        - neighborDevice: sw1-ISP1
+          neighborPort: Ethernet2
+          port: Ethernet1
+        - neighborDevice: sw2-ISP1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: sw1-ISP2
+          neighborPort: Ethernet2
+          port: Ethernet3
+        - neighborDevice: sw2-ISP2
+          neighborPort: Ethernet2
+          port: Ethernet4
+        - neighborDevice: sw1-DC3
+          neighborPort: Ethernet3
+          port: Ethernet5
+
+  - sw1-DC3:
+      ip_addr: 192.168.0.173
+      node_type: veos
+      neighbors:
+        - neighborDevice: sw1-ISP3
+          neighborPort: Ethernet5
+          port: Ethernet3
+        - neighborDevice: Host-DC3
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: Host-DC3
+          neighborPort: Ethernet2
+          port: Ethernet2
+
+  - spine1-DC1:
+      ip_addr: 192.168.0.11
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet3
+          port: Ethernet2
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet3
+          port: Ethernet3
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet3
+          port: Ethernet4
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet3
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet3
+          port: Ethernet7
+        - neighborDevice: Server01
+          neighborPort: Ethernet1
+          port: Ethernet8
+
+  -  spine2-DC1:
+      ip_addr: 192.168.0.12
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet4
+          port: Ethernet2
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet4
+          port: Ethernet3
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet4
+          port: Ethernet4
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet4
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet4
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  -  spine3-DC1:
+      ip_addr: 192.168.0.13
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet5
+          port: Ethernet2
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet5
+          port: Ethernet3
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet5
+          port: Ethernet4
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet5
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet5
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet5
+          port: Ethernet7
+
+  - leaf1-DC1:
+      ip_addr: 192.168.0.21
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet2
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet2
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet2
+          port: Ethernet5
+        - neighborDevice: Host1-DC1
+          neighborPort: Ethernet1
+          port: Ethernet6
+        - neighborDevice: Host1-DC1
+          neighborPort: Ethernet2
+          port: Ethernet7
+
+  - leaf2-DC1:
+      ip_addr: 192.168.0.22
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet3
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet3
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet3
+          port: Ethernet5
+        - neighborDevice: Host1-DC1
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: Host1-DC1
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  - leaf3-DC1:
+      ip_addr: 192.168.0.23
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet4
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet4
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet4
+          port: Ethernet5
+        - neighborDevice: Host2-DC1
+          neighborPort: Ethernet1
+          port: Ethernet6
+        - neighborDevice: Host2-DC1
+          neighborPort: Ethernet2
+          port: Ethernet7
+
+  - leaf4-DC1:
+      ip_addr: 192.168.0.24
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet5
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet5
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet5
+          port: Ethernet5
+        - neighborDevice: Host2-DC1
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: Host2-DC1
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  - borderleaf1-DC1:
+      ip_addr: 192.168.0.25
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: borderleaf2-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet6
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet6
+          port: Ethernet5
+        - neighborDevice: sw1-ISP1
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: DCI
+          neighborPort: Ethernet1
+          port: Ethernet12
+
+  - borderleaf2-DC1:
+      ip_addr: 192.168.0.26
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: borderleaf1-DC1
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet7
+          port: Ethernet3
+        - neighborDevice: spine2-DC1
+          neighborPort: Ethernet7
+          port: Ethernet4
+        - neighborDevice: spine3-DC1
+          neighborPort: Ethernet7
+          port: Ethernet5
+        - neighborDevice: sw2-ISP1
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: DCI
+          neighborPort: Ethernet2
+          port: Ethernet12
+
+  -  spine1-DC2:
+      ip_addr: 192.168.0.14
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet3
+          port: Ethernet2
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet3
+          port: Ethernet3
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet3
+          port: Ethernet4
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet3
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet3
+          port: Ethernet7
+
+  -  spine2-DC2:
+      ip_addr: 192.168.0.15
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet4
+          port: Ethernet2
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet4
+          port: Ethernet3
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet4
+          port: Ethernet4
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet4
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet4
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  -  spine3-DC2:
+      ip_addr: 192.168.0.16
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet5
+          port: Ethernet2
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet5
+          port: Ethernet3
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet5
+          port: Ethernet4
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet5
+          port: Ethernet5
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet5
+          port: Ethernet6
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet5
+          port: Ethernet7
+
+  - leaf1-DC2:
+      ip_addr: 192.168.0.31
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet2
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet2
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet2
+          port: Ethernet5
+        - neighborDevice: Host1-DC2
+          neighborPort: Ethernet1
+          port: Ethernet6
+        - neighborDevice: Host1-DC2
+          neighborPort: Ethernet2
+          port: Ethernet7
+
+  - leaf2-DC2:
+      ip_addr: 192.168.0.32
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet3
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet3
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet3
+          port: Ethernet5
+        - neighborDevice: Host1-DC2
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: Host1-DC2
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  - leaf3-DC2:
+      ip_addr: 192.168.0.33
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet4
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet4
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet4
+          port: Ethernet5
+        - neighborDevice: Host2-DC2
+          neighborPort: Ethernet1
+          port: Ethernet6
+        - neighborDevice: Host2-DC2
+          neighborPort: Ethernet2
+          port: Ethernet7
+
+  - leaf4-DC2:
+      ip_addr: 192.168.0.34
+      node_type: veos
+      neighbors:
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet5
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet5
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet5
+          port: Ethernet5
+        - neighborDevice: Host2-DC2
+          neighborPort: Ethernet3
+          port: Ethernet6
+        - neighborDevice: Host2-DC2
+          neighborPort: Ethernet4
+          port: Ethernet7
+
+  - borderleaf1-DC2:
+      ip_addr: 192.168.0.35
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: borderleaf2-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet6
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet6
+          port: Ethernet5
+        - neighborDevice: sw1-ISP2
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: DCI
+          neighborPort: Ethernet3
+          port: Ethernet12
+
+  - borderleaf2-DC2:
+      ip_addr: 192.168.0.36
+      node_type: veos
+      neighbors:
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: borderleaf1-DC2
+          neighborPort: Ethernet2
+          port: Ethernet2
+        - neighborDevice: spine1-DC2
+          neighborPort: Ethernet7
+          port: Ethernet3
+        - neighborDevice: spine2-DC2
+          neighborPort: Ethernet7
+          port: Ethernet4
+        - neighborDevice: spine3-DC2
+          neighborPort: Ethernet7
+          port: Ethernet5
+        - neighborDevice: sw2-ISP2
+          neighborPort: Ethernet10
+          port: Ethernet10
+        - neighborDevice: DCI
+          neighborPort: Ethernet4
+          port: Ethernet12
+
+  - Host1-DC1:
+      ip_addr: 192.168.0.71
+      node_type: generic
+      neighbors:
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet6
+          port: Ethernet1
+        - neighborDevice: leaf1-DC1
+          neighborPort: Ethernet7
+          port: Ethernet2
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: leaf2-DC1
+          neighborPort: Ethernet7
+          port: Ethernet4
+
+  - Host2-DC1:
+      ip_addr: 192.168.0.72
+      node_type: generic
+      neighbors:
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet6
+          port: Ethernet1
+        - neighborDevice: leaf3-DC1
+          neighborPort: Ethernet7
+          port: Ethernet2
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: leaf4-DC1
+          neighborPort: Ethernet7
+          port: Ethernet4
+
+  - Host1-DC2:
+      ip_addr: 192.168.0.81
+      node_type: generic
+      neighbors:
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet6
+          port: Ethernet1
+        - neighborDevice: leaf1-DC2
+          neighborPort: Ethernet7
+          port: Ethernet2
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: leaf2-DC2
+          neighborPort: Ethernet7
+          port: Ethernet4
+
+  - Host2-DC2:
+      ip_addr: 192.168.0.82
+      node_type: generic
+      neighbors:
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet6
+          port: Ethernet1
+        - neighborDevice: leaf3-DC2
+          neighborPort: Ethernet7
+          port: Ethernet2
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet6
+          port: Ethernet3
+        - neighborDevice: leaf4-DC2
+          neighborPort: Ethernet7
+          port: Ethernet4
+
+  - Host-DC3:
+      ip_addr: 192.168.0.91
+      node_type: generic
+      neighbors:
+        - neighborDevice: sw1-DC3
+          neighborPort: Ethernet1
+          port: Ethernet1
+        - neighborDevice: sw1-DC3
+          neighborPort: Ethernet2
+          port: Ethernet2
+
+  - Server01:
+      ip_addr: 192.168.0.30
+      node_type: generic
+      neighbors:
+        - neighborDevice: spine1-DC1
+          neighborPort: Ethernet8
+          port: Ethernet1
+
+  - cvp:
+      ip_addr: 192.168.0.5
+      node_type: cvp
+      auto_configuration: true #forauto-configuration this must be true
+      telemetry_ingest_key: 1a38fe7df56879d685e51b6f0ff86327 #optional
+      ntp_ip: 0.pool.ntp.org #optional
+      firstname: Larry #optional
+      lastname: Gomez #optional
+      email: "Larry@arista.com" #optional
+      onboard_device: true
